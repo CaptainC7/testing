@@ -92,5 +92,51 @@ namespace testing.Controllers
 
             return Ok(users);
         }
+
+        [HttpGet("{ID}")]
+        public IActionResult GetUser(int ID)
+        {
+            User user = new User();
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string sql = "select * from Person where ID = @ID";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", ID);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                user.ID = reader.GetInt32(0);
+                                user.FName= reader.GetString(1);
+                                user.LName= reader.GetString(2);
+                                user.Gender = reader.GetString(3);
+                                user.BDate= reader.GetString(4);
+                                user.Username = reader.GetString(5);
+                                user.Password = reader.GetString(6);
+                            }
+                            else
+                            {
+                                return NotFound();
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                ModelState.AddModelError("User", "Sorry, we have an exception");
+                return BadRequest(ModelState);
+            }
+
+            return Ok(user);
+        }
     }
 }
