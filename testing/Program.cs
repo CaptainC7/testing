@@ -14,7 +14,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPersonServices, PersonServices>(); // If it implements an interface
-//builder.Services.AddDbContext<dbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDb")));
+builder.Services.AddScoped<ITaskListTemplateServices, TaskListTemplateServices>(); // If it implements an interface
+builder.Services.AddScoped<ITaskGroupServices, TaskGroupServices>();
+
+
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDb")));
 

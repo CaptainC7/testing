@@ -68,7 +68,7 @@ namespace testing.Controllers
 
         [HttpDelete]
         [Route("DeletePerson/{id:int}")]
-        public async Task<IActionResult> DeletPersonByID(int id)
+        public async Task<IActionResult> DeletePersonByID(int id)
         {
             var result = await _userServices.DeletePersonByID(id);
 
