@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ClassLibraryDLL.Models;
+using ClassLibraryDLL.Models.DTOs;
+using ClassLibraryDLL.Services;
+using ClassLibraryDLL.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Data.SqlClient;
-using testing.Models;
 
 namespace testing.Controllers
 {
@@ -9,134 +13,70 @@ namespace testing.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly string connectionString;
-        public UsersController(IConfiguration configuration)
+        private readonly IPersonServices _userServices;
+        public UsersController(IPersonServices userServices)
         {
-            connectionString = configuration["ConnectionStrings:SqlServerDb"] ?? "";
-        }
-
-        [HttpPost]
-        public IActionResult CreateUser(UserDTO userDTO)
-        {
-            try
-            {
-                using (var connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    string sql = "insert into Person " + 
-                        "(FName, LName, Gender, BDate, Username, Password) " +
-                        "values (@FName, @LName, @Gender, @BDate, @Username, @Password)";
-
-                    using (var command = new SqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@FName", userDTO.FName);
-                        command.Parameters.AddWithValue("@LName", userDTO.LName);
-                        command.Parameters.AddWithValue("@Gender", userDTO.Gender);
-                        command.Parameters.AddWithValue("@BDate", userDTO.BDate);
-                        command.Parameters.AddWithValue("@Username", userDTO.Username);
-                        command.Parameters.AddWithValue("@Password", userDTO.Password);
-
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("User", "Sorry, we have an exception");
-                return BadRequest(ModelState);
-            }
-
-            return Ok();
+            _userServices = userServices;
         }
 
         [HttpGet]
-        public IActionResult GetUsers() 
+        [Route("/GetUsers")]
+        public async Task<IActionResult> GetUsers()
         {
-            List<User> users = new List<User>();
-            try
-            {
-                using (var connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    string sql = "select * from Person";
-
-                    using (var command = new SqlCommand(sql, connection))
-                    {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                User user = new User();
-
-                                user.ID = reader.GetInt32(0);
-                                user.FName = reader.GetString(1);
-                                user.LName = reader.GetString(2);
-                                user.Gender = reader.GetString(3);
-                                user.BDate = reader.GetString(4);
-                                user.Username = reader.GetString(5);
-                                user.Password = reader.GetString(6);
-
-                                users.Add(user);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("User", "Sorry, we have an exception");
-                return BadRequest(ModelState);
-            }
-
+            var users = await _userServices.GetUsers();
             return Ok(users);
         }
 
-        [HttpGet("{ID}")]
-        public IActionResult GetUser(int ID)
+        [HttpPost]
+        [Route("CreateUser")]
+        public async Task<IActionResult> AddPerson([FromBody] PersonDTO personDTO)
         {
-            User user = new User();
+            await _userServices.AddPerson(personDTO);
+            return Ok(personDTO);
+        }
 
-            try
+        [HttpPut]
+        [Route("UpdatePerson/{id:int}")]
+        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
+        {
+            await _userServices.UpdatePerson(id, personDTO);
+
+            return Ok(personDTO);
+        }
+
+        [HttpGet]
+        [Route("Login")]
+        public IActionResult CheckLogin(string username, string password)
+        {
+            var result = _userServices.CheckLogin(username, password);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetPerson/{id:int}")]
+        public async Task<IActionResult> GetPersonByID (int id)
+        {
+            var person = await _userServices.GetPersonByID(id);
+
+            if (person == null)
             {
-                using (var connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    string sql = "select * from Person where ID = @ID";
-
-                    using (var command = new SqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@id", ID);
-
-                        using (var reader = command.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                user.ID = reader.GetInt32(0);
-                                user.FName= reader.GetString(1);
-                                user.LName= reader.GetString(2);
-                                user.Gender = reader.GetString(3);
-                                user.BDate= reader.GetString(4);
-                                user.Username = reader.GetString(5);
-                                user.Password = reader.GetString(6);
-                            }
-                            else
-                            {
-                                return NotFound();
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                ModelState.AddModelError("User", "Sorry, we have an exception");
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            return Ok(user);
+            return Ok(person);
+        }
+
+        [HttpDelete]
+        [Route("DeletePerson/{id:int}")]
+        public async Task<IActionResult> DeletPersonByID(int id)
+        {
+            var result = await _userServices.DeletePersonByID(id);
+
+            if(!result)
+            {
+                return NotFound();
+            }
+            return Ok();
         }
     }
 }
