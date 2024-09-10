@@ -28,20 +28,39 @@ namespace testing.Controllers
         }
 
         [HttpPost]
-        [Route("CreateUser")]
+        [Route("CreatePerson")]
         public async Task<IActionResult> AddPerson([FromBody] PersonDTO personDTO)
         {
             await _userServices.AddPerson(personDTO);
             return Ok(personDTO);
         }
 
+        //[HttpPut]
+        //[Route("UpdatePerson/{id:int}")]
+        //public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
+        //{
+        //    await _userServices.UpdatePerson(id, personDTO);
+
+        //    return Ok(personDTO);
+        //}
+
         [HttpPut]
         [Route("UpdatePerson/{id:int}")]
         public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
         {
-            await _userServices.UpdatePerson(id, personDTO);
+            if (personDTO == null || id <= 0)
+            {
+                return BadRequest("Invalid data.");
+            }
 
-            return Ok(personDTO);
+            var existingGroup = await _userServices.UpdatePerson(id, personDTO);
+
+            if (existingGroup == null)
+            {
+                return NotFound("Task group not found.");
+            }
+
+            return Ok(existingGroup);
         }
 
         [HttpGet]

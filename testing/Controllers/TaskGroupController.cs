@@ -16,18 +16,33 @@ namespace testing.Controllers
             _taskGroupServices = taskGroupServices;
         }
 
-        [HttpGet("GetTemplates/{taskListTemplateId}")]
-        public async Task<IActionResult> GetTaskGroupsByTemplateId(int taskListTemplateId)
-        {
-            var taskGroups = await _taskGroupServices.GetTaskGroupsByTemplateIdAsync(taskListTemplateId);
+        //[HttpGet("GetGroups/{taskListTemplateId}")]
+        //public async Task<IActionResult> GetTaskGroupsByTemplateId(int taskListTemplateId)
+        //{
+        //    var taskGroups = await _taskGroupServices.GetTaskGroupsByTemplateIdAsync(taskListTemplateId);
 
-            if (taskGroups == null || !taskGroups.Any())
+        //    if (taskGroups == null || !taskGroups.Any())
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return Ok(taskGroups);
+        //}
+
+        [HttpGet]
+        [Route("GetTaskGroupsByTemplate/{taskListTemplateId}")]
+        public async Task<ActionResult<IEnumerable<TaskGroupDTO>>> GetTaskGroupsByTemplateId(int taskListTemplateId)
+        {
+            var result = await _taskGroupServices.GetTaskGroupsByTemplateIdAsync(taskListTemplateId);
+
+            if (result == null || !result.Any())
             {
-                return NotFound();
+                return NotFound("No task groups found for the given TaskListTemplate.");
             }
 
-            return Ok(taskGroups);
+            return Ok(result);
         }
+
 
         [HttpPost]
         [Route("/CreateTaskGroup")]
@@ -62,17 +77,31 @@ namespace testing.Controllers
             return Ok(existingGroup);
         }
 
+        //[HttpDelete]
+        //[Route("DeleteTaskGroup/{id:int}")]
+        //public async Task<IActionResult> DeleteTaskGroupByID(int id)
+        //{
+        //    var result = await _taskGroupServices.DeleteTaskGroupByID(id);
+
+        //    if (!result)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok();
+        //}
+
         [HttpDelete]
         [Route("DeleteTaskGroup/{id:int}")]
-        public async Task<IActionResult> DeleteTaskGroupByID(int id)
+        public async Task<IActionResult> DeleteTaskGroupAsync(int id)
         {
-            var result = await _taskGroupServices.DeleteTaskGroupByID(id);
+            var result = await _taskGroupServices.DeleteTaskGroupAsync(id);
 
             if (!result)
             {
-                return NotFound();
+                return NotFound(); // Task not found
             }
-            return Ok();
+
+            return NoContent(); // Successfully deleted
         }
     }
 }

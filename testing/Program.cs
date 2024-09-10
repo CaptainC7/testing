@@ -13,9 +13,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IPersonServices, PersonServices>(); // If it implements an interface
-builder.Services.AddScoped<ITaskListTemplateServices, TaskListTemplateServices>(); // If it implements an interface
+builder.Services.AddScoped<IPersonServices, PersonServices>();
+builder.Services.AddScoped<ITaskListTemplateServices, TaskListTemplateServices>();
 builder.Services.AddScoped<ITaskGroupServices, TaskGroupServices>();
+builder.Services.AddScoped<ITaskServices, TaskServices>();
+builder.Services.AddScoped<ITaskListInstanceServices, TaskListInstanceServices>();
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>

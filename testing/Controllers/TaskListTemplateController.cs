@@ -3,6 +3,7 @@ using ClassLibraryDLL.Models.DTOs;
 using ClassLibraryDLL.Services;
 using ClassLibraryDLL.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
@@ -20,10 +21,10 @@ namespace testing.Controllers
         }
 
         [HttpGet]
-        [Route("/GetTemplates")]
-        public async Task<IActionResult> GetTemplates()
+        [Route("GetAllTemplates")]
+        public async Task<ActionResult<IEnumerable<TaskListTemplateDTO>>> GetAllTemplates()
         {
-            var templates = await _taskListTemplateServices.GetTemplates();
+            var templates = await _taskListTemplateServices.GetAllTaskListTemplatesAsync();
             return Ok(templates);
         }
 
