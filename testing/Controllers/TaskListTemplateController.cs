@@ -30,26 +30,26 @@ namespace testing.Controllers
 
         [HttpPost]
         [Route("CreateTemplate")]
-        public async Task<IActionResult> AddTemplate([FromBody] TaskListTemplateDTO taskListTemplateDTO)
+        public async Task<IActionResult> AddTemplateAsync([FromBody] AddTaskListTemplateDTO addTaskListTemplateDTO)
         {
-            await _taskListTemplateServices.AddTemplate(taskListTemplateDTO);
-            return Ok(taskListTemplateDTO);
+            await _taskListTemplateServices.AddTemplateAsync(addTaskListTemplateDTO);
+            return Ok(addTaskListTemplateDTO);
         }
 
         [HttpPut]
         [Route("UpdateTemplate/{id:int}")]
-        public async Task<IActionResult> UpdateTemplate(int id, [FromBody] TaskListTemplateDTO taskListTemplateDTO)
+        public async Task<IActionResult> UpdateTemplate(int id, [FromBody] AddTaskListTemplateDTO addTaskListTemplateDTO)
         {
-            await _taskListTemplateServices.UpdateTemplate(id, taskListTemplateDTO);
+            await _taskListTemplateServices.UpdateTemplate(id, addTaskListTemplateDTO);
 
-            return Ok(taskListTemplateDTO);
+            return Ok(addTaskListTemplateDTO);
         }
 
         [HttpGet]
         [Route("GetTemplate/{id:int}")]
-        public async Task<IActionResult> GetTemplateByID(int id)
+        public async Task<IActionResult> GetTemplateByIDAsync(int id)
         {
-            var template = await _taskListTemplateServices.GetTemplateByID(id);
+            var template = await _taskListTemplateServices.GetTemplateByIDAsync(id);
 
             if (template == null)
             {

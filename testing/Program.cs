@@ -18,6 +18,8 @@ builder.Services.AddScoped<ITaskListTemplateServices, TaskListTemplateServices>(
 builder.Services.AddScoped<ITaskGroupServices, TaskGroupServices>();
 builder.Services.AddScoped<ITaskServices, TaskServices>();
 builder.Services.AddScoped<ITaskListInstanceServices, TaskListInstanceServices>();
+builder.Services.AddScoped<ITaskGroupInstanceServices, TaskGroupInstanceServices>();
+builder.Services.AddScoped<ITaskInstanceServices, TaskInstanceServices>();
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
