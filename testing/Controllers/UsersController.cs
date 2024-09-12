@@ -46,14 +46,14 @@ namespace testing.Controllers
 
         [HttpPut]
         [Route("UpdatePerson/{id:int}")]
-        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
+        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO, int userID)
         {
             if (personDTO == null || id <= 0)
             {
                 return BadRequest("Invalid data.");
             }
 
-            var existingGroup = await _userServices.UpdatePerson(id, personDTO);
+            var existingGroup = await _userServices.UpdatePerson(id, personDTO, userID);
 
             if (existingGroup == null)
             {
@@ -87,9 +87,9 @@ namespace testing.Controllers
 
         [HttpDelete]
         [Route("DeletePerson/{id:int}")]
-        public async Task<IActionResult> DeletePersonByID(int id)
+        public async Task<IActionResult> DeletePersonByID(int id, int userID)
         {
-            var result = await _userServices.DeletePersonByID(id);
+            var result = await _userServices.DeletePersonByID(id, userID);
 
             if(!result)
             {

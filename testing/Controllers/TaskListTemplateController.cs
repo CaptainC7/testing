@@ -38,11 +38,20 @@ namespace testing.Controllers
 
         [HttpPut]
         [Route("UpdateTemplate/{id:int}")]
-        public async Task<IActionResult> UpdateTemplate(int id, [FromBody] AddTaskListTemplateDTO addTaskListTemplateDTO)
+        public async Task<IActionResult> UpdateTemplate(int id, [FromBody] UpdateTaskListTemplateDTO updateTaskListTemplateDTO, int userID)
         {
-            await _taskListTemplateServices.UpdateTemplate(id, addTaskListTemplateDTO);
+            if (userID <= 0)
+            {
+                return BadRequest("Invalid user ID.");
+            }
 
-            return Ok(addTaskListTemplateDTO);
+            var updatedTemplate = await _taskListTemplateServices.UpdateTemplate(id, updateTaskListTemplateDTO, userID);
+            if (updatedTemplate == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedTemplate);
         }
 
         [HttpGet]
@@ -61,9 +70,9 @@ namespace testing.Controllers
 
         [HttpDelete]
         [Route("DeleteTemplate/{id:int}")]
-        public async Task<IActionResult> DeleteTemplateByID(int id)
+        public async Task<IActionResult> DeleteTemplateByID(int id, int userID)
         {
-            var result = await _taskListTemplateServices.DeleteTemplateByID(id);
+            var result = await _taskListTemplateServices.DeleteTemplateByID(id, userID);
 
             if (!result)
             {
