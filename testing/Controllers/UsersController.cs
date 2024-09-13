@@ -29,24 +29,15 @@ namespace testing.Controllers
 
         [HttpPost]
         [Route("CreatePerson")]
-        public async Task<IActionResult> AddPerson([FromBody] PersonDTO personDTO)
+        public async Task<IActionResult> AddPerson([FromBody] PersonDTO personDTO, int userID)
         {
-            await _userServices.AddPerson(personDTO);
+            await _userServices.AddPerson(personDTO, userID);
             return Ok(personDTO);
         }
 
-        //[HttpPut]
-        //[Route("UpdatePerson/{id:int}")]
-        //public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
-        //{
-        //    await _userServices.UpdatePerson(id, personDTO);
-
-        //    return Ok(personDTO);
-        //}
-
         [HttpPut]
         [Route("UpdatePerson/{id:int}")]
-        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO, int userID)
+        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO, [FromQuery] int userID)
         {
             if (personDTO == null || id <= 0)
             {

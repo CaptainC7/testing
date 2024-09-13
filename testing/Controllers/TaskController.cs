@@ -46,28 +46,28 @@ namespace testing.Controllers
 
         [HttpPost]
         [Route("/CreateTask")]
-        public async Task<ActionResult<TaskDTO>> CreateTask([FromBody] AddTaskDTO addTaskDTO)
+        public async Task<ActionResult<TaskDTO>> CreateTask([FromBody] AddTaskDTO addTaskDTO, int userID)
         {
             if (addTaskDTO == null)
             {
                 return BadRequest("TaskDTO is null.");
             }
 
-            var result = await _taskServices.AddTaskAsync(addTaskDTO);
+            var result = await _taskServices.AddTaskAsync(addTaskDTO, userID);
 
             return CreatedAtAction(nameof(CreateTask), new { id = result.ID }, result);
         }
 
         [HttpPut]
         [Route("/UpdateTask")]
-        public async Task<IActionResult> UpdateTaskAsync(int id, [FromBody] AddTaskDTO addTaskDTO)
+        public async Task<IActionResult> UpdateTaskAsync(int id, [FromBody] AddTaskDTO addTaskDTO, int userID)
         {
             if (addTaskDTO == null || id <= 0)
             {
                 return BadRequest("Invalid data.");
             }
 
-            var existingGroup = await _taskServices.UpdateTaskAsync(id, addTaskDTO);
+            var existingGroup = await _taskServices.UpdateTaskAsync(id, addTaskDTO, userID);
 
             if (existingGroup == null)
             {
@@ -77,31 +77,18 @@ namespace testing.Controllers
             return Ok(existingGroup);
         }
 
-        //[HttpDelete]
-        //[Route("DeleteTask/{id:int}")]
-        //public async Task<IActionResult> DeleteTaskByID(int id)
-        //{
-        //    var result = await _taskServices.DeleteTaskByID(id);
-
-        //    if (!result)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok();
-        //}
-
         [HttpDelete]
         [Route("DeleteTask/{id:int}")]
-        public async Task<IActionResult> DeleteTask(int id)
+        public async Task<IActionResult> DeleteTask(int id, int userID)
         {
-            var result = await _taskServices.DeleteTaskAsync(id);
+            var result = await _taskServices.DeleteTaskAsync(id, userID);
 
             if (!result)
             {
-                return NotFound(); // Task not found
+                return NotFound();
             }
 
-            return NoContent(); // Successfully deleted
+            return NoContent();
         }
     }
 }

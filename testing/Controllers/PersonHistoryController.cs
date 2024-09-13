@@ -16,7 +16,7 @@ namespace testing.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PersonHistoryDTO>>> GetAllPersonHistories()
+        public async Task<ActionResult<IEnumerable<PersonHistoryDTO>>> GetAllPersonHistoriesAsync()
         {
             var personHistories = await _personHistoryService.GetAllPersonHistoriesAsync();
             return Ok(personHistories);

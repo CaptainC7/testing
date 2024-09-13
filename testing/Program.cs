@@ -23,6 +23,9 @@ builder.Services.AddScoped<ITaskInstanceServices, TaskInstanceServices>();
 builder.Services.AddScoped<ITaskAttachmentServices, TaskAttachmentServices>();
 builder.Services.AddScoped<IPersonHistoryServices, PersonHistoryServices>();
 builder.Services.AddScoped<ITaskListTemplateHistoryServices, TaskListTemplateHistoryServices>();
+builder.Services.AddScoped<ITaskGroupHistoryServices, TaskGroupHistoryServices>();
+builder.Services.AddScoped<ITaskHistoryServices, TaskHistoryServices>();
+
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
